@@ -1,0 +1,34 @@
+on:
+  push:
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - '*-v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+
+name: Draft a release
+
+jobs:
+  make_release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    - name: Create artifact
+      run: |
+        pwd
+        TAG_NAME="${GITHUB_REF##*/}"
+        sed -i "s/\\\$TAG:/$TAG_NAME:/" zgateway_version
+        cat zgateway_version
+        ARTIFACT_NAME="nspanel_pro_zigbee_${TAG_NAME}.zip"
+        zip -r $ARTIFACT_NAME . -x ".git/*" ".github/*"
+        echo "GITHUB_ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV
+    - name: Create Release
+      uses: ncipollo/release-action@v1.14.0
+      with:
+        artifacts: ${{ env.GITHUB_ARTIFACT_NAME }}
+        allowUpdates: true
+        draft: true
+        makeLatest: true
+        name: ${{ github.ref_name }}
+        body: ${{ github.ref_name }}
+        token: ${{ github.token }}

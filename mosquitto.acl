@@ -1,0 +1,112 @@
+user zigbee
+
+topic   write   zigbee/system/availability
+topic   read    zigbee/system/discover
+topic   write   zigbee/system/discovering
+topic   write   zigbee/system/discovered
+topic   write   zigbee/device/+/information
+topic   write   zigbee/device/+/availability
+topic   read    zigbee/device/+/update/power
+topic   read    zigbee/device/+/update/toggle/+
+topic   read    zigbee/device/+/update/brightness
+topic   read    zigbee/device/+/update/color-temperature
+topic   read    zigbee/device/+/update/color-rgb
+topic   read    zigbee/device/+/update/percentage
+topic   read    zigbee/device/+/update/motor-control
+topic   read    zigbee/device/+/update/motor-reverse
+topic   write   zigbee/device/+/updated/power
+topic   write   zigbee/device/+/updated/toggle/+
+topic   write   zigbee/device/+/updated/brightness
+topic   write   zigbee/device/+/updated/color-temperature
+topic   write   zigbee/device/+/updated/color-rgb
+topic   write   zigbee/device/+/updated/percentage
+topic   write   zigbee/device/+/updated/motor-control
+topic   write   zigbee/device/+/updated/motor-reverse
+topic   write   zigbee/device/+/updated/motor-clb
+topic   write   zigbee/device/+/updated/detect
+topic   write   zigbee/device/+/updated/temperature
+topic   write   zigbee/device/+/updated/humidity
+topic   write   zigbee/device/+/updated/battery
+topic   write   zigbee/device/+/updated/press
+topic   write   zigbee/device/+/updated/rssi
+topic   read    zigbee/device/+/firmware-update
+topic   write   zigbee/device/+/firmware-updating
+topic   write   zigbee/device/+/firmware-updated
+topic   read    zigbee/device/+/delete
+topic   write   zigbee/device/+/deleted
+topic   read    hardware/button/factory-reset/updated/press
+topic   write   zigbee/device/+/update-result/#
+topic   read    zigbee/device/+/update/startup
+topic   write   zigbee/device/+/updated/startup
+
+user hardware
+
+topic   write   hardware/system/availability
+topic   write   hardware/button/power/updated/press
+topic   read    hardware/button/power/update/indicator
+topic   write   hardware/button/power/updated/indicator
+topic   write   hardware/button/discover/updated/press
+topic   read    hardware/button/discover/update/indicator
+topic   write   hardware/button/discover/updated/indicator
+topic   write   hardware/button/security/updated/press
+topic   read    hardware/button/security/update/indicator
+topic   write   hardware/button/security/updated/indicator
+topic   write   hardware/button/entertainment/updated/press
+topic   read    hardware/button/entertainment/update/indicator
+topic   write   hardware/button/entertainment/updated/indicator
+topic   write   hardware/button/factory-reset/updated/press
+topic   read    hardware/status-indicator/update/indicator
+topic   write   hardware/status-indicator/updated/indicator
+topic   read    hardware/speaker/update/beep
+topic   write   hardware/speaker/updated/beep
+topic   read    hardware/speaker/update/sound
+topic   write   hardware/speaker/updated/sound
+
+
+user api
+
+topic   readwrite   #
+
+
+user scene
+
+topic   readwrite   #
+
+
+user log
+
+topic   readwrite   #
+
+
+user nodejs
+
+topic   readwrite   #
+
+user xlh
+
+topic   readwrite   #
+
+user wyh
+
+topic   readwrite   #
+
+user liuyi
+
+topic   readwrite   #
+
+user camera           
+                     
+topic   readwrite   #
+
+user stream           
+                     
+topic   readwrite   #
+
+user ai-engine          
+                     
+topic   readwrite   #
+
+user ai          
+                     
+topic   readwrite   #
+

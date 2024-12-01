@@ -7,6 +7,12 @@ The releases are created to match the firmware versions, where the first two dig
 
 The Readme.txt file is the original manufacturer’s changelog. Which is not updated properly.
 
+## App Version history
+Actual plan is to have a release in every Quarter.
+
+### v3.5.1 (2024-12.01)
+- Chnage on-device mqtt settings making zigbee commands available
+
 ### Usage
 
 Install NSPanel Pro Tools apk and on the Integration tab Zigbee section select custom gateway. 

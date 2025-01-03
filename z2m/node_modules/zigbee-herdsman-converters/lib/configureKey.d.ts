@@ -1,0 +1,3 @@
+import { Definition } from './types';
+export declare function getConfigureKey(definition: Definition): any;
+//# sourceMappingURL=configureKey.d.ts.map

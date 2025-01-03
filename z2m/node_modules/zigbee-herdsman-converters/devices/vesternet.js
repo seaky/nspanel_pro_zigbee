@@ -1,0 +1,330 @@
+"use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const fromZigbee_1 = __importDefault(require("../converters/fromZigbee"));
+const toZigbee_1 = __importDefault(require("../converters/toZigbee"));
+const exposes = __importStar(require("../lib/exposes"));
+const modernExtend_1 = require("../lib/modernExtend");
+const reporting = __importStar(require("../lib/reporting"));
+const e = exposes.presets;
+const definitions = [
+    {
+        fingerprint: [
+            { modelID: 'HK-SL-DIM-A', softwareBuildID: '2.5.3_r52' },
+            { modelID: 'HK-SL-DIM-A', softwareBuildID: '2.9.2_r54' },
+        ],
+        model: 'VES-ZB-DIM-004',
+        vendor: 'Vesternet',
+        description: 'Zigbee dimmer',
+        extend: [
+            (0, modernExtend_1.light)({ configureReporting: true, levelConfig: { disabledFeatures: ['on_transition_time', 'off_transition_time'] } }),
+            (0, modernExtend_1.electricityMeter)(),
+        ],
+        whiteLabel: [{ vendor: 'Sunricher', model: 'SR-ZG9040A' }],
+    },
+    {
+        fingerprint: [{ modelID: 'ON/OFF -M', softwareBuildID: '2.9.2_r54' }],
+        model: 'VES-ZB-HLD-017',
+        vendor: 'Vesternet',
+        description: 'Zigbee high load switch',
+        fromZigbee: [fromZigbee_1.default.on_off, fromZigbee_1.default.electrical_measurement, fromZigbee_1.default.metering, fromZigbee_1.default.power_on_behavior, fromZigbee_1.default.ignore_genOta],
+        toZigbee: [toZigbee_1.default.on_off, toZigbee_1.default.power_on_behavior],
+        exposes: [e.switch(), e.power(), e.current(), e.voltage(), e.energy(), e.power_on_behavior(['off', 'on', 'previous'])],
+        whiteLabel: [{ vendor: 'Sunricher', model: 'SR-ZG9101SAC-HP-SWITCH-B' }],
+        configure: async (device, coordinatorEndpoint) => {
+            const endpoint = device.getEndpoint(1);
+            await reporting.bind(endpoint, coordinatorEndpoint, ['genOnOff', 'haElectricalMeasurement', 'seMetering']);
+            await reporting.onOff(endpoint);
+            await reporting.readEletricalMeasurementMultiplierDivisors(endpoint);
+            await reporting.activePower(endpoint);
+            await reporting.rmsCurrent(endpoint, { min: 10, change: 10 });
+            await reporting.rmsVoltage(endpoint, { min: 10 });
+            await reporting.readMeteringMultiplierDivisor(endpoint);
+            await reporting.currentSummDelivered(endpoint);
+        },
+    },
+    {
+        fingerprint: [{ modelID: 'HK-ZCC-A', softwareBuildID: '2.5.3_r48' }],
+        model: 'VES-ZB-MOT-019',
+        vendor: 'Vesternet',
+        description: 'Zigbee motor controller',
+        fromZigbee: [fromZigbee_1.default.cover_position_tilt, fromZigbee_1.default.ignore_genOta],
+        toZigbee: [toZigbee_1.default.cover_state, toZigbee_1.default.cover_position_tilt],
+        exposes: [e.cover_position()],
+        whiteLabel: [{ vendor: 'Sunricher', model: 'SR-ZG9080A' }],
+        meta: { coverInverted: true },
+        configure: async (device, coordinatorEndpoint) => {
+            const endpoint = device.getEndpoint(1);
+            await reporting.bind(endpoint, coordinatorEndpoint, ['closuresWindowCovering']);
+            await reporting.currentPositionLiftPercentage(endpoint);
+        },
+    },
+    {
+        fingerprint: [
+            { modelID: 'ZGRC-KEY-013', softwareBuildID: '2.5.3_r20' },
+            { modelID: 'ZGRC-KEY-013', softwareBuildID: '2.7.6_r25' },
+        ],
+        model: 'VES-ZB-REM-013',
+        vendor: 'Vesternet',
+        description: 'Zigbee remote control - 12 button',
+        fromZigbee: [fromZigbee_1.default.command_on, fromZigbee_1.default.command_off, fromZigbee_1.default.command_move, fromZigbee_1.default.command_stop, fromZigbee_1.default.command_recall, fromZigbee_1.default.battery, fromZigbee_1.default.ignore_genOta],
+        exposes: [
+            e.battery(),
+            e.action([
+                'on_1',
+                'off_1',
+                'stop_1',
+                'brightness_move_up_1',
+                'brightness_move_down_1',
+                'brightness_stop_1',
+                'on_2',
+                'off_2',
+                'stop_2',
+                'brightness_move_up_2',
+                'brightness_move_down_2',
+                'brightness_stop_2',
+                'on_3',
+                'off_3',
+                'stop_3',
+                'brightness_move_up_3',
+                'brightness_move_down_3',
+                'brightness_stop_3',
+                'on_4',
+                'off_4',
+                'stop_4',
+                'brightness_move_up_4',
+                'brightness_move_down_4',
+                'brightness_stop_4',
+                'recall_1_1',
+                'recall_1_2',
+                'recall_1_3',
+                'recall_1_4',
+                'recall_2_1',
+                'recall_2_2',
+                'recall_2_3',
+                'recall_2_4',
+            ]),
+        ],
+        toZigbee: [],
+        meta: { multiEndpoint: true, battery: { dontDividePercentage: true }, publishDuplicateTransaction: true },
+        whiteLabel: [{ vendor: 'Sunricher', model: 'SR-ZG9001K12-DIM-Z4' }],
+        configure: async (device, coordinatorEndpoint) => {
+            await reporting.bind(device.getEndpoint(1), coordinatorEndpoint, ['genOnOff', 'genLevelCtrl', 'genScenes', 'genPowerCfg']);
+            await reporting.bind(device.getEndpoint(2), coordinatorEndpoint, ['genOnOff', 'genLevelCtrl', 'genScenes']);
+            await reporting.bind(device.getEndpoint(3), coordinatorEndpoint, ['genOnOff', 'genLevelCtrl', 'genScenes']);
+            await reporting.bind(device.getEndpoint(4), coordinatorEndpoint, ['genOnOff', 'genLevelCtrl', 'genScenes']);
+            await reporting.batteryPercentageRemaining(device.getEndpoint(1));
+        },
+    },
+    {
+        fingerprint: [
+            { modelID: 'HK-SL-RELAY-A', softwareBuildID: '2.5.3_r47' },
+            { modelID: 'HK-SL-RELAY-A', softwareBuildID: '2.9.2_r54' },
+        ],
+        model: 'VES-ZB-SWI-005',
+        vendor: 'Vesternet',
+        description: 'Zigbee switch',
+        fromZigbee: [fromZigbee_1.default.on_off, fromZigbee_1.default.power_on_behavior, fromZigbee_1.default.ignore_genOta],
+        toZigbee: [toZigbee_1.default.on_off, toZigbee_1.default.power_on_behavior],
+        exposes: [e.switch(), e.power_on_behavior(['off', 'on', 'previous'])],
+        whiteLabel: [{ vendor: 'Sunricher', model: 'SR-ZG9100A-S' }],
+        configure: async (device, coordinatorEndpoint) => {
+            const endpoint = device.getEndpoint(1);
+            await reporting.bind(endpoint, coordinatorEndpoint, ['genOnOff']);
+            await reporting.onOff(endpoint);
+        },
+    },
+    {
+        fingerprint: [
+            { modelID: 'ON/OFF(2CH)', softwareBuildID: '2.5.3_r2' },
+            { modelID: 'ON/OFF(2CH)', softwareBuildID: '2.9.2_r3' },
+        ],
+        model: 'VES-ZB-SWI-015',
+        vendor: 'Vesternet',
+        description: 'Zigbee 2 channel switch',
+        fromZigbee: [fromZigbee_1.default.on_off, fromZigbee_1.default.electrical_measurement, fromZigbee_1.default.metering, fromZigbee_1.default.power_on_behavior, fromZigbee_1.default.ignore_genOta],
+        toZigbee: [toZigbee_1.default.on_off, toZigbee_1.default.power_on_behavior],
+        exposes: [
+            e.switch().withEndpoint('l1'),
+            e.switch().withEndpoint('l2'),
+            e.power(),
+            e.current(),
+            e.voltage(),
+            e.energy(),
+            e.power_on_behavior(['off', 'on', 'previous']),
+        ],
+        whiteLabel: [{ vendor: 'Sunricher', model: 'SR-ZG9101SAC-HP-SWITCH-2CH' }],
+        endpoint: (device) => {
+            return { l1: 1, l2: 2 };
+        },
+        meta: { multiEndpoint: true, multiEndpointSkip: ['power', 'energy', 'current', 'voltage'] },
+        configure: async (device, coordinatorEndpoint) => {
+            const endpoint1 = device.getEndpoint(1);
+            const endpoint2 = device.getEndpoint(2);
+            await reporting.bind(endpoint1, coordinatorEndpoint, ['genOnOff']);
+            await reporting.bind(endpoint2, coordinatorEndpoint, ['genOnOff']);
+            await reporting.onOff(endpoint1);
+            await reporting.onOff(endpoint2);
+            if (device && device.softwareBuildID == '2.9.2_r3') {
+                // newer firmware version power reports are on endpoint 11
+                const endpoint11 = device.getEndpoint(11);
+                await reporting.bind(endpoint11, coordinatorEndpoint, ['haElectricalMeasurement', 'seMetering']);
+                await reporting.readEletricalMeasurementMultiplierDivisors(endpoint11);
+                await reporting.activePower(endpoint11);
+                await reporting.rmsCurrent(endpoint11, { min: 10, change: 10 });
+                await reporting.rmsVoltage(endpoint11, { min: 10 });
+                await reporting.readMeteringMultiplierDivisor(endpoint11);
+            }
+            else if (device && device.softwareBuildID == '2.5.3_r2') {
+                // older firmware version power reports are on endpoint 1
+                await reporting.bind(endpoint1, coordinatorEndpoint, ['haElectricalMeasurement', 'seMetering']);
+                await reporting.readEletricalMeasurementMultiplierDivisors(endpoint1);
+                await reporting.activePower(endpoint1);
+                await reporting.rmsCurrent(endpoint1, { min: 10, change: 10 });
+                await reporting.rmsVoltage(endpoint1, { min: 10 });
+                await reporting.readMeteringMultiplierDivisor(endpoint1);
+                await reporting.currentSummDelivered(endpoint1);
+            }
+        },
+    },
+    {
+        fingerprint: [
+            { modelID: 'ZG2833K2_EU07', softwareBuildID: '2.5.3_r20' },
+            { modelID: 'ZG2833K2_EU07', softwareBuildID: '2.7.6_r25' },
+        ],
+        model: 'VES-ZB-WAL-006',
+        vendor: 'Vesternet',
+        description: 'Zigbee wall controller - 2 button',
+        fromZigbee: [fromZigbee_1.default.command_on, fromZigbee_1.default.command_off, fromZigbee_1.default.command_move, fromZigbee_1.default.command_stop, fromZigbee_1.default.battery, fromZigbee_1.default.ignore_genOta],
+        exposes: [e.battery(), e.action(['on_1', 'off_1', 'stop_1', 'brightness_move_up_1', 'brightness_move_down_1', 'brightness_stop_1'])],
+        toZigbee: [],
+        meta: { multiEndpoint: true, battery: { dontDividePercentage: true } },
+        whiteLabel: [{ vendor: 'Sunricher', model: 'SR-ZG9001K2-DIM2' }],
+        configure: async (device, coordinatorEndpoint) => {
+            await reporting.bind(device.getEndpoint(1), coordinatorEndpoint, ['genOnOff', 'genLevelCtrl', 'genPowerCfg']);
+            await reporting.batteryPercentageRemaining(device.getEndpoint(1));
+        },
+    },
+    {
+        fingerprint: [
+            { modelID: 'ZG2833K4_EU06', softwareBuildID: '2.5.3_r20' },
+            { modelID: 'ZG2833K4_EU06', softwareBuildID: '2.7.6_r25' },
+        ],
+        model: 'VES-ZB-WAL-011',
+        vendor: 'Vesternet',
+        description: 'Zigbee wall controller - 4 button',
+        fromZigbee: [fromZigbee_1.default.command_on, fromZigbee_1.default.command_off, fromZigbee_1.default.command_move, fromZigbee_1.default.command_stop, fromZigbee_1.default.battery, fromZigbee_1.default.ignore_genOta],
+        exposes: [
+            e.battery(),
+            e.action([
+                'on_1',
+                'off_1',
+                'stop_1',
+                'brightness_move_up_1',
+                'brightness_move_down_1',
+                'brightness_stop_1',
+                'on_2',
+                'off_2',
+                'stop_2',
+                'brightness_move_up_2',
+                'brightness_move_down_2',
+                'brightness_stop_2',
+            ]),
+        ],
+        toZigbee: [],
+        meta: { multiEndpoint: true, battery: { dontDividePercentage: true } },
+        whiteLabel: [{ vendor: 'Sunricher', model: 'SR-ZG9001K4-DIM2' }],
+        configure: async (device, coordinatorEndpoint) => {
+            await reporting.bind(device.getEndpoint(1), coordinatorEndpoint, ['genOnOff', 'genLevelCtrl', 'genPowerCfg']);
+            await reporting.bind(device.getEndpoint(2), coordinatorEndpoint, ['genOnOff', 'genLevelCtrl']);
+            await reporting.batteryPercentageRemaining(device.getEndpoint(1));
+        },
+    },
+    {
+        fingerprint: [
+            { modelID: 'ZG2833K8_EU05', softwareBuildID: '2.5.3_r20' },
+            { modelID: 'ZG2833K8_EU05', softwareBuildID: '2.7.6_r25' },
+        ],
+        model: 'VES-ZB-WAL-012',
+        vendor: 'Vesternet',
+        description: 'Zigbee wall controller - 8 button',
+        fromZigbee: [fromZigbee_1.default.command_on, fromZigbee_1.default.command_off, fromZigbee_1.default.command_move, fromZigbee_1.default.command_stop, fromZigbee_1.default.battery, fromZigbee_1.default.ignore_genOta],
+        exposes: [
+            e.battery(),
+            e.action([
+                'on_1',
+                'off_1',
+                'stop_1',
+                'brightness_move_up_1',
+                'brightness_move_down_1',
+                'brightness_stop_1',
+                'on_2',
+                'off_2',
+                'stop_2',
+                'brightness_move_up_2',
+                'brightness_move_down_2',
+                'brightness_stop_2',
+                'on_3',
+                'off_3',
+                'stop_3',
+                'brightness_move_up_3',
+                'brightness_move_down_3',
+                'brightness_stop_3',
+                'on_4',
+                'off_4',
+                'stop_4',
+                'brightness_move_up_4',
+                'brightness_move_down_4',
+                'brightness_stop_4',
+            ]),
+        ],
+        toZigbee: [],
+        meta: { multiEndpoint: true, battery: { dontDividePercentage: true } },
+        whiteLabel: [{ vendor: 'Sunricher', model: 'SR-ZG9001K8-DIM' }],
+        configure: async (device, coordinatorEndpoint) => {
+            await reporting.bind(device.getEndpoint(1), coordinatorEndpoint, ['genOnOff', 'genLevelCtrl', 'genPowerCfg']);
+            await reporting.bind(device.getEndpoint(2), coordinatorEndpoint, ['genOnOff', 'genLevelCtrl']);
+            await reporting.bind(device.getEndpoint(3), coordinatorEndpoint, ['genOnOff', 'genLevelCtrl']);
+            await reporting.bind(device.getEndpoint(4), coordinatorEndpoint, ['genOnOff', 'genLevelCtrl']);
+            await reporting.batteryPercentageRemaining(device.getEndpoint(1));
+        },
+    },
+];
+exports.default = definitions;
+module.exports = definitions;
+//# sourceMappingURL=vesternet.js.map

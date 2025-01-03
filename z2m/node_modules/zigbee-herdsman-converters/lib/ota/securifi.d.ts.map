@@ -1,0 +1,1 @@
+{"version":3,"file":"securifi.d.ts","sourceRoot":"","sources":["../../src/lib/ota/securifi.ts"],"names":[],"mappings":"AAAA,OAAO,EAAC,GAAG,EAAE,EAAE,EAAC,MAAM,UAAU,CAAC;AAIjC,wBAAsB,iBAAiB,CAAC,MAAM,EAAE,EAAE,CAAC,MAAM,EAAE,cAAc,GAAE,GAAG,CAAC,SAAgB,wDAO9F;AAED,wBAAsB,cAAc,CAAC,MAAM,EAAE,EAAE,CAAC,MAAM,EAAE,UAAU,EAAE,GAAG,CAAC,UAAU,mBAOjF"}

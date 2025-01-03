@@ -1,0 +1,24 @@
+{
+    "compilerOptions": {
+        "allowSyntheticDefaultImports": true,
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "target": "ES2022",
+        "lib": ["ES2022"],
+        "strict": true,
+        "noImplicitAny": true,
+        "noImplicitThis": true,
+        "moduleResolution": "node",
+        "declaration": true,
+        "declarationMap": true,
+        "outDir": "dist",
+        "baseUrl": ".",
+        "allowJs": true,
+        "rootDir": "lib",
+        "inlineSourceMap": true,
+        "resolveJsonModule": true,
+        "experimentalDecorators": true
+    },
+    "include": ["lib/**/*", "lib/util/settings.schema.json"],
+    "exclude": ["node_modules"]
+}

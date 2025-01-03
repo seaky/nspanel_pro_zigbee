@@ -17,8 +17,8 @@ jobs:
       run: |
         pwd
         TAG_NAME="${GITHUB_REF##*/}"
-        sed -i "s/\\\$TAG:/$TAG_NAME:/" zgateway_version
-        cat zgateway_version
+        sed -i "s/\\\$TAG:/$TAG_NAME:/" package_version
+        cat package_version
         ARTIFACT_NAME="nspanel_pro_zigbee_${TAG_NAME}.zip"
         zip -r $ARTIFACT_NAME . -x ".git/*" ".github/*"
         echo "GITHUB_ARTIFACT_NAME=$ARTIFACT_NAME" >> $GITHUB_ENV

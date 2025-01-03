@@ -1,68 +1,56 @@
 #!/bin/bash
 
-echo "-------------Zigbee guard_process run-------------------------"
+. /vendor/bin/siliconlabs_host/pm_config.sh
+. /vendor/bin/siliconlabs_host/pm_utils.sh
 
-export LD_LIBRARY_PATH=/vendor/bin/siliconlabs_host/:${LD_LIBRARY_PATH}
-echo ${LD_LIBRARY_PATH}
-
-Z3GatewayHost_sonoff_go() {
-	echo "do Z3GatewayHost_sonoff_go"
-	
-	killall zgateway
-	sleep 1
-
-	# killall mosquitto
-	# sleep 1
-
-	echo $(pwd)
-	cd /vendor/bin/siliconlabs_host/
-	echo $(pwd)
-
-	# sleep 1
-	# /vendor/bin/siliconlabs_host/mosquitto -c /vendor/bin/siliconlabs_host/mosquitto.conf &
-
-	sleep 3
-
-	#在终端打印整个运行日志
-	/vendor/bin/siliconlabs_host/zgateway &
+start_zgateway() {
+    echo  "zgateway_start: start $PKG_NAME gateway"
+    sh /vendor/bin/siliconlabs_host/run_zgateway.sh
+    echo  "zgateway_start: wait for start"
 	sleep 60
+    echo  "zgateway_start: wait done"
 }
-sub_mqtt_check() {
-        export LD_LIBRARY_PATH=/vendor/bin/siliconlabs_host/:${LD_LIBRARY_PATH}
-        res=$(/vendor/bin/siliconlabs_host/mosquitto_sub -h "localhost" -t "zigbee/system/availability" -i rkguardsh_zigbee  -u zigbee -P "EWoXIXT!0AouN" -C 1)
-        echo "$res"
-        if [ "$res" = "{\"online\": false, \"reason\": \"KeepAlive timeout\"}" ];
-        then
-                echo "Z3GatewayHost_sonoffNum sub mqtt restart `date +"%Y-%m-%d %H:%M:%S"`" >> /data/vendor/siliconlabs_host/zgatewayStatus
-                Z3GatewayHost_sonoff_go
 
+start_mosquitto() {
+    echo  "mosquitto_start: start mosquitto"
+    sh /vendor/bin/siliconlabs_host/run_mosquitto.sh
+    echo  "mosquitto_start: wait for start"
+	sleep 3
+    echo  "mosquitto_start: done"
+}
+
+check_zgateway() {
+        res=$(/vendor/bin/siliconlabs_host/mosquitto_sub -h "localhost" -t "zigbee2mqtt/bridge/state" -i rkguardsh_zigbe -W 5 -C 1)
+        if [ "$res" = "{\"state\": \"offline\"}" ]; then
+            echo "sub_mqtt_check: z2m offline"
+            echo "z2m restart `date +"%Y-%m-%d %H:%M:%S"`" >> /data/vendor/siliconlabs_host/zgatewayStatus
+            stop_zgateway
+            start_zgateway
         fi
 }
-check() {
-    echo "do check"
 
-    local Z3GatewayHost_sonoffNum=`ps -A | grep -w 'zgateway' | grep -v "grep" | wc -l`
-	# local mosquittoNum=`ps -A | grep -w 'mosquitto' | grep -v "grep" | wc -l`
+check_zstack() {
+    local z_gw_proc=`ps -ef | grep -w 'node /data/local/nspanel_tools_pkg/z2m/z2m/index.js' | grep -v "grep" | wc -l`
+    local mosquitto_proc=`ps -A | grep -w 'mosquitto' | grep -v "grep" | wc -l`
 
-
-    echo "Z3GatewayHost_sonoffNum:"${Z3GatewayHost_sonoffNum}
-
-
-    if [ ${Z3GatewayHost_sonoffNum} -ne 1 ]; then
-        echo "Z3GatewayHost_sonoffNum restart `date +"%Y-%m-%d %H:%M:%S"`" >> /data/vendor/siliconlabs_host/zgatewayStatus
-
-
-        Z3GatewayHost_sonoff_go
-
+    
+    if [ ${mosquitto_proc} -ne 1 ]; then
+        echo ""
+        echo "check: mosquitto not found"
+        echo "mosquitto start `date +"%Y-%m-%d %H:%M:%S"`" >> /data/vendor/siliconlabs_host/zgatewayStatus
+        start_mosquitto
+    elif [ ${z_gw_proc} -ne 1 ]; then
+        echo ""
+        echo "check: zgateway not found"
+        echo "zgateway start `date +"%Y-%m-%d %H:%M:%S"`" >> /data/vendor/siliconlabs_host/zgatewayStatus
+        start_zgateway
     else
-	sub_mqtt_check
-	
+	    check_zgateway
     fi
-
 }
 
-while true
-do
+# Background monitoring function
+while true; do
+    check_zstack
     sleep 5
-    check
 done

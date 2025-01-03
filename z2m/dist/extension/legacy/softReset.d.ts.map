@@ -1,0 +1,1 @@
+{"version":3,"file":"softReset.d.ts","sourceRoot":"","sources":["../../../lib/extension/legacy/softReset.ts"],"names":[],"mappings":"AAMA,OAAO,SAAS,MAAM,cAAc,CAAC;AAErC;;GAEG;AACH,MAAM,CAAC,OAAO,OAAO,SAAU,SAAQ,SAAS;IAC5C,OAAO,CAAC,KAAK,CAAC,CAAiB;IAC/B,OAAO,CAAC,OAAO,CAA6D;IAE7D,KAAK,IAAI,OAAO,CAAC,IAAI,CAAC;IAUrC,OAAO,CAAC,UAAU;IAKlB,OAAO,CAAC,UAAU;YASJ,aAAa;CAqB9B"}

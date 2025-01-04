@@ -44,7 +44,7 @@ start_package() {
     echo "start_package"
 
     # --- custom start code
-    sh /vendor/bin/siliconlabs_host/run.sh
+    nohup sh /vendor/bin/siliconlabs_host/run.sh > /dev/null 2>&1 &
 }
 
 # Install package backup original folder

@@ -2,16 +2,24 @@
 
 # NSPanel Pro Tools package manager script
 
-echo "Package installer by Seaky v1.0"
+version="1.1"
+echo "Package installer by Seaky v$version"
+
+usage() {
+    echo "Usage: pm.sh <install|uninstall> <source path> <target path> -d <option> -d <option>"
+    exit 1
+}
 
 if [ $# -lt 2 ]
 then
     echo "Not enough params"
-    echo "Usage: pm.sh <install|uninstall> <source path> <target path>"
-    exit 1
+	usage
 fi
 
+command=$1
 source_dir=$2
+shift 2
+
 if [ ! -d $source_dir ]
 then
     echo "source path: $source_dir must be a directory"
@@ -53,6 +61,16 @@ install() {
 
     if [ -f "$target_dir/$version_file" ]; then
         purge_dir $target_dir
+		if [ "$option_keep_data" = true ]; then
+			echo "Option keep data found. Data folder will be saved."
+			# archive data directory
+			cp -a $PKG_PATH/data $PKG_ROOT/z2m_data_backup
+		fi
+		if [ "$option_keep_configuration" = true ]; then
+			echo "Option keep configuration found. Config folder will be saved."
+			# archive data directory
+			cp -a $PKG_PATH/config $PKG_ROOT/z2m_config_backup
+		fi
         purge_dir $PKG_PATH
     else
         echo "No version file found. Backup target dir."
@@ -67,6 +85,7 @@ install() {
     chown -R root:shell "$target_dir"
 
     mkdir -p $PKG_PATH/z2m
+    mkdir -p $PKG_PATH/data
     mkdir -p $PKG_PATH/nodejs
     mkdir -p $PKG_PATH/config
     scopy $source_dir/z2m $PKG_PATH/z2m
@@ -75,6 +94,18 @@ install() {
 
     chmod -R 755 $PKG_PATH/nodejs
     chown -R root:shell $PKG_PATH/nodejs
+	if [ "$option_keep_data" = true ]; then
+		echo "Restore saved data folder"
+		# restore data directoy
+		cp -a $PKG_ROOT/z2m_data_backup/* $PKG_PATH/data
+		rm -rf $PKG_ROOT/z2m_data_backup
+	fi
+	if [ "$option_keep_configuration" = true ]; then
+		echo "Restore saved config folder"
+		# restore config directoy
+		cp -a $PKG_ROOT/z2m_config_backup/* $PKG_PATH/config
+		rm -rf $PKG_ROOT/z2m_config_backup
+	fi
     # --- custom installer code end
     
     start_package
@@ -100,20 +131,60 @@ uninstall() {
     fi
 }
 
+proc_opts() {
+	options=""
+	while [ $# -gt 0 ]; do
+		case "$1" in
+			-d)
+				if [ -n "$2" ]; then
+					options="$options $2"
+					shift
+				else
+					echo "Error: Missing parameter for -d option" >&2
+					usage
+				fi
+				;;
+			-*)
+				echo "Error: Unknown option: $1" >&2
+				usage
+				;;
+			*)
+				echo "Error: Unknown parameter: $1" >&2
+				usage
+				;;
+		esac
+		shift
+	done
+	for option in $options; do
+		if [ "$option" = "keep_data" ]; then
+			option_keep_data=true
+		elif [ "$option" = "keep_configuration" ]; then
+			option_keep_configuration=true
+		fi
+	done
+}
+
 # Entry point
 echo "for $PKG_NAME package"
 
 version_file=$PKG_VERSION_FILE
 
-case "$1" in
+case "$command" in
     install)
-        target_dir=$3
+		if [ $# -lt 1 ]; then
+			echo "no target path parameter specified"
+			usage
+		fi
+		
+		target_dir=$1
+		shift 1
 
         if [ ! -d "$target_dir" ]; then
             echo "Target dir does not exist: $target_dir"
             exit 1
         fi
-
+		
+		proc_opts $@
         install
         ;;
     uninstall)

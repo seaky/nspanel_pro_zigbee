@@ -7,10 +7,14 @@ The Readme.txt file is the original manufacturer’s changelog. Which is not upd
 ## Version history
 
 ### v3.7.1.0 (2025-01-19)
-- Portable version of Sonoff 3.7.1 ZStack
+- portable version of Sonoff 3.7.1 ZStack
+
+### v3.5.0.4 (2024-12-01)
+- new package installer
+- configurations are relocated to  /data/local/nspanel_tool_pkg/sonoff
 
 ### v3.5.0.1 (2024-12-01)
-- Change on-device mqtt settings making zigbee commands available
+- change on-device mqtt settings enabling mqtt connections from outside
 
 ## About Sonoff NSPanel Pro ZStack repository
 Sonoff NSPanel Pro device Zigbee gateway packages repository. 

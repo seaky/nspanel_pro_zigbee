@@ -6,7 +6,6 @@ export default class Configure extends Extension {
     private configuring;
     private attempts;
     private topic;
-    private legacyTopic;
     private onReconfigure;
     private onMQTTMessage;
     start(): Promise<void>;

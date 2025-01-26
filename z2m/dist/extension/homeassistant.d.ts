@@ -9,6 +9,12 @@ interface DiscoveryEntry {
     object_id: string;
     discovery_payload: KeyValue;
 }
+interface ActionData {
+    action: string;
+    button?: string;
+    scene?: string;
+    region?: string;
+}
 /**
  * This class handles the bridge entity configuration for Home Assistant Discovery.
  */
@@ -39,8 +45,7 @@ export default class HomeAssistant extends Extension {
     private discoveryRegex;
     private discoveryRegexWoTopic;
     private statusTopic;
-    private entityAttributes;
-    private legacyTrigger;
+    private legacyActionSensor;
     private experimentalEventEntities;
     private zigbee2MQTTVersion;
     private discoveryOrigin;
@@ -68,7 +73,7 @@ export default class HomeAssistant extends Extension {
     private getDiscoveryTopic;
     private publishDeviceTriggerDiscover;
     private getBridgeEntity;
-    private parseActionValue;
+    parseActionValue(action: string): ActionData;
     private buildAction;
     private prepareActionEventTypes;
     private parseGroupsFromRegex;

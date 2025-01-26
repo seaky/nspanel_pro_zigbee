@@ -10,6 +10,7 @@ export default class Device {
     get name(): string;
     get isSupported(): boolean;
     get customClusters(): CustomClusters;
+    get otaExtraMetas(): zhc.Ota.ExtraMetas;
     constructor(device: zh.Device);
     exposes(): zhc.Expose[];
     resolveDefinition(ignoreCache?: boolean): Promise<void>;
@@ -17,7 +18,6 @@ export default class Device {
     endpoint(key?: string | number): zh.Endpoint | undefined;
     endpointName(endpoint: zh.Endpoint): string | undefined;
     getEndpointNames(): string[];
-    isIkeaTradfri(): boolean;
     isDevice(): this is Device;
     isGroup(): this is Group;
 }

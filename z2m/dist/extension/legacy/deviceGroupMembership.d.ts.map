@@ -1,1 +1,0 @@
-{"version":3,"file":"deviceGroupMembership.d.ts","sourceRoot":"","sources":["../../../lib/extension/legacy/deviceGroupMembership.ts"],"names":[],"mappings":"AASA,OAAO,SAAS,MAAM,cAAc,CAAC;AAIrC,MAAM,CAAC,OAAO,OAAO,qBAAsB,SAAQ,SAAS;IACzC,KAAK,IAAI,OAAO,CAAC,IAAI,CAAC;IAIzB,aAAa,CAAC,IAAI,EAAE,SAAS,CAAC,WAAW,GAAG,OAAO,CAAC,IAAI,CAAC;CAgDxE"}

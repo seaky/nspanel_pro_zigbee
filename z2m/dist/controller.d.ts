@@ -1,3 +1,4 @@
+import type { IClientPublishOptions } from 'mqtt';
 export declare class Controller {
     private eventBus;
     private zigbee;
@@ -16,7 +17,7 @@ export declare class Controller {
     exit(code: number, restart?: boolean): Promise<void>;
     onZigbeeAdapterDisconnected(): Promise<void>;
     publishEntityState(entity: Group | Device, payload: KeyValue, stateChangeReason?: StateChangeReason): Promise<void>;
-    iteratePayloadAttributeOutput(topicRoot: string, payload: KeyValue, options: MQTTOptions): Promise<void>;
+    iteratePayloadAttributeOutput(topicRoot: string, payload: KeyValue, options: IClientPublishOptions): Promise<void>;
     private callExtensions;
 }
 //# sourceMappingURL=controller.d.ts.map

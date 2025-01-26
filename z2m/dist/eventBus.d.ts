@@ -7,8 +7,6 @@ export default class EventBus {
     onAdapterDisconnected(key: ListenerKey, callback: () => void): void;
     emitPermitJoinChanged(data: eventdata.PermitJoinChanged): void;
     onPermitJoinChanged(key: ListenerKey, callback: (data: eventdata.PermitJoinChanged) => void): void;
-    emitPublishAvailability(): void;
-    onPublishAvailability(key: ListenerKey, callback: () => void): void;
     emitEntityRenamed(data: eventdata.EntityRenamed): void;
     onEntityRenamed(key: ListenerKey, callback: (data: eventdata.EntityRenamed) => void): void;
     emitEntityRemoved(data: eventdata.EntityRemoved): void;

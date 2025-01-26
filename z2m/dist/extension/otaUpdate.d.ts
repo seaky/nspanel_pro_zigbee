@@ -2,7 +2,6 @@ import Extension from './extension';
 export default class OTAUpdate extends Extension {
     private inProgress;
     private lastChecked;
-    private legacyApi;
     start(): Promise<void>;
     private removeProgressAndRemainingFromState;
     private onZigbeeEvent;

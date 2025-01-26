@@ -18,11 +18,11 @@ export default class Zigbee {
         missingRouters: Device[];
     }>;
     getNetworkParameters(): Promise<zh.NetworkParameters>;
-    reset(type: 'soft' | 'hard'): Promise<void>;
     stop(): Promise<void>;
     getPermitJoin(): boolean;
-    getPermitJoinTimeout(): number | undefined;
-    permitJoin(permit: boolean, device?: Device, time?: number): Promise<void>;
+    getPermitJoinEnd(): number | undefined;
+    permitJoin(time: number, device?: Device): Promise<void>;
+    resolveDevicesDefinitions(ignoreCache?: boolean): Promise<void>;
     private resolveDevice;
     private resolveGroup;
     resolveEntity(key: string | number | zh.Device): Device | Group | undefined;

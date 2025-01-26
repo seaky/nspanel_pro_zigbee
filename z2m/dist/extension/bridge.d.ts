@@ -1,16 +1,7 @@
-import * as zhc from 'zigbee-herdsman-converters';
+import type { Zigbee2MQTTDevice, Zigbee2MQTTResponse } from 'lib/types/api';
 import Device from '../model/device';
 import Group from '../model/group';
 import Extension from './extension';
-type DefinitionPayload = {
-    model: string;
-    vendor: string;
-    description: string;
-    exposes: zhc.Expose[];
-    supports_ota: boolean;
-    icon: string;
-    options: zhc.Option[];
-};
 export default class Bridge extends Extension {
     private zigbee2mqttVersion;
     private zigbeeHerdsmanVersion;
@@ -27,43 +18,39 @@ export default class Bridge extends Extension {
     /**
      * Requests
      */
-    deviceOptions(message: KeyValue | string): Promise<MQTTResponse>;
-    groupOptions(message: KeyValue | string): Promise<MQTTResponse>;
-    bridgeOptions(message: KeyValue | string): Promise<MQTTResponse>;
-    deviceRemove(message: string | KeyValue): Promise<MQTTResponse>;
-    groupRemove(message: string | KeyValue): Promise<MQTTResponse>;
-    healthCheck(message: string | KeyValue): Promise<MQTTResponse>;
-    coordinatorCheck(message: string | KeyValue): Promise<MQTTResponse>;
-    groupAdd(message: string | KeyValue): Promise<MQTTResponse>;
-    deviceRename(message: string | KeyValue): Promise<MQTTResponse>;
-    groupRename(message: string | KeyValue): Promise<MQTTResponse>;
-    restart(message: string | KeyValue): Promise<MQTTResponse>;
-    backup(message: string | KeyValue): Promise<MQTTResponse>;
-    installCodeAdd(message: KeyValue | string): Promise<MQTTResponse>;
-    permitJoin(message: KeyValue | string): Promise<MQTTResponse>;
-    configLastSeen(message: KeyValue | string): Promise<MQTTResponse>;
-    configHomeAssistant(message: string | KeyValue): Promise<MQTTResponse>;
-    configElapsed(message: KeyValue | string): Promise<MQTTResponse>;
-    configLogLevel(message: KeyValue | string): Promise<MQTTResponse>;
-    touchlinkIdentify(message: KeyValue | string): Promise<MQTTResponse>;
-    touchlinkFactoryReset(message: KeyValue | string): Promise<MQTTResponse>;
-    touchlinkScan(message: KeyValue | string): Promise<MQTTResponse>;
+    deviceOptions(message: KeyValue | string): Promise<Zigbee2MQTTResponse<'bridge/response/device/options'>>;
+    groupOptions(message: KeyValue | string): Promise<Zigbee2MQTTResponse<'bridge/response/group/options'>>;
+    bridgeOptions(message: KeyValue | string): Promise<Zigbee2MQTTResponse<'bridge/response/options'>>;
+    deviceRemove(message: string | KeyValue): Promise<Zigbee2MQTTResponse<'bridge/response/device/remove'>>;
+    groupRemove(message: string | KeyValue): Promise<Zigbee2MQTTResponse<'bridge/response/group/remove'>>;
+    healthCheck(message: string | KeyValue): Promise<Zigbee2MQTTResponse<'bridge/response/health_check'>>;
+    coordinatorCheck(message: string | KeyValue): Promise<Zigbee2MQTTResponse<'bridge/response/coordinator_check'>>;
+    groupAdd(message: string | KeyValue): Promise<Zigbee2MQTTResponse<'bridge/response/group/add'>>;
+    deviceRename(message: string | KeyValue): Promise<Zigbee2MQTTResponse<'bridge/response/device/rename'>>;
+    groupRename(message: string | KeyValue): Promise<Zigbee2MQTTResponse<'bridge/response/group/rename'>>;
+    restart(message: string | KeyValue): Promise<Zigbee2MQTTResponse<'bridge/response/restart'>>;
+    backup(message: string | KeyValue): Promise<Zigbee2MQTTResponse<'bridge/response/backup'>>;
+    installCodeAdd(message: KeyValue | string): Promise<Zigbee2MQTTResponse<'bridge/response/install_code/add'>>;
+    permitJoin(message: KeyValue | string): Promise<Zigbee2MQTTResponse<'bridge/response/permit_join'>>;
+    touchlinkIdentify(message: KeyValue | string): Promise<Zigbee2MQTTResponse<'bridge/response/touchlink/identify'>>;
+    touchlinkFactoryReset(message: KeyValue | string): Promise<Zigbee2MQTTResponse<'bridge/response/touchlink/factory_reset'>>;
+    touchlinkScan(message: KeyValue | string): Promise<Zigbee2MQTTResponse<'bridge/response/touchlink/scan'>>;
     /**
      * Utils
      */
-    getValue(message: KeyValue | string): string | boolean | number;
-    changeEntityOptions(entityType: 'device' | 'group', message: KeyValue | string): Promise<MQTTResponse>;
-    deviceConfigureReporting(message: string | KeyValue): Promise<MQTTResponse>;
-    deviceInterview(message: string | KeyValue): Promise<MQTTResponse>;
-    deviceGenerateExternalDefinition(message: string | KeyValue): Promise<MQTTResponse>;
-    renameEntity(entityType: 'group' | 'device', message: string | KeyValue): Promise<MQTTResponse>;
-    removeEntity(entityType: 'group' | 'device', message: string | KeyValue): Promise<MQTTResponse>;
+    changeEntityOptions<T extends 'device' | 'group'>(entityType: T, message: KeyValue | string): Promise<Zigbee2MQTTResponse<T extends 'device' ? 'bridge/response/device/options' : 'bridge/response/group/options'>>;
+    deviceConfigureReporting(message: string | KeyValue): Promise<Zigbee2MQTTResponse<'bridge/response/device/configure_reporting'>>;
+    deviceInterview(message: string | KeyValue): Promise<Zigbee2MQTTResponse<'bridge/response/device/interview'>>;
+    deviceGenerateExternalDefinition(message: string | KeyValue): Promise<Zigbee2MQTTResponse<'bridge/response/device/generate_external_definition'>>;
+    renameEntity<T extends 'device' | 'group'>(entityType: T, message: string | KeyValue): Promise<Zigbee2MQTTResponse<T extends 'device' ? 'bridge/response/device/rename' : 'bridge/response/group/rename'>>;
+    removeEntity<T extends 'device' | 'group'>(entityType: T, message: string | KeyValue): Promise<Zigbee2MQTTResponse<T extends 'device' ? 'bridge/response/device/remove' : 'bridge/response/group/remove'>>;
+    getEntity(type: 'group', ID: string): Group;
+    getEntity(type: 'device', ID: string): Device;
     getEntity(type: 'group' | 'device', ID: string): Device | Group;
     publishInfo(): Promise<void>;
     publishDevices(): Promise<void>;
     publishGroups(): Promise<void>;
     publishDefinitions(): Promise<void>;
-    getDefinitionPayload(device: Device): DefinitionPayload | undefined;
+    getDefinitionPayload(device: Device): Zigbee2MQTTDevice['definition'] | undefined;
 }
-export {};
 //# sourceMappingURL=bridge.d.ts.map

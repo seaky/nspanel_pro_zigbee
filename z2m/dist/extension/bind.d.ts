@@ -4,6 +4,7 @@ export default class Bind extends Extension {
     start(): Promise<void>;
     private parseMQTTMessage;
     private onMQTTMessage;
+    private publishResponse;
     onGroupMembersChanged(data: eventdata.GroupMembersChanged): Promise<void>;
     getSetupReportingEndpoints(bind: zh.Bind, coordinatorEp: zh.Endpoint): zh.Endpoint[];
     setupReporting(binds: zh.Bind[]): Promise<void>;

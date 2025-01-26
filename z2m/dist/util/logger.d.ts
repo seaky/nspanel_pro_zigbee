@@ -26,7 +26,7 @@ declare class Logger {
     warning(messageOrLambda: string | (() => string), namespace?: string): void;
     info(messageOrLambda: string | (() => string), namespace?: string): void;
     debug(messageOrLambda: string | (() => string), namespace?: string): void;
-    cleanup(): void;
+    private cleanup;
     end(): Promise<void>;
 }
 declare const _default: Logger;

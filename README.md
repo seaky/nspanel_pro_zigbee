@@ -6,6 +6,10 @@ The Readme.txt file is the original manufacturer’s changelog. Which is not upd
 
 ## Version history of z2m
 
+### v2.6.3.0 (2025-11-23)
+- updated z2m stack with v2.6.3
+- new default z2m ui WindFront
+
 ### v2.1.1.3 (2025-11-23)
 - issue fixed: Z2M does not retain settings after reboot
 

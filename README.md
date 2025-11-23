@@ -4,7 +4,11 @@ The releases are created to match the firmware versions, where the first three d
 
 The Readme.txt file is the original manufacturer’s changelog. Which is not updated properly.
 
-## Version history
+## Version history of z2m
+
+### v2.6.3.0 (2025-11-23)
+- updated z2m stack with v2.6.3
+- new default z2m ui WindFront
 
 ### v2.1.1.3 (2025-11-23)
 - issue fixed: Z2M does not retain settings after reboot
@@ -19,6 +23,14 @@ The Readme.txt file is the original manufacturer’s changelog. Which is not upd
 
 ### v1.42.2
 - final z2m 1.42 package
+
+## Version history of Sonoff
+
+### v3.7.1
+- official 3.7.1 fw zigbee stack
+
+### v3.5.0
+- official 3.5.0 fw zigbee stack
 
 ## About Sonoff NSPanel Pro ZStack repository
 Sonoff NSPanel Pro device Zigbee gateway packages repository. 

@@ -6,7 +6,7 @@ The Readme.txt file is the original manufacturer’s changelog. Which is not upd
 
 ## Version history
 
-### v2.1.1.2 (2025-05-xx)
+### v2.1.1.3 (2025-11-23)
 - issue fixed: Z2M does not retain settings after reboot
 
 ### v2.1.1.1 (2025-02-25)

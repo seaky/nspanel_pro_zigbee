@@ -1,4 +1,34 @@
-# Sonoff NSPanel Pro ZStack repository
+# NSPanel Pro Sonoff ZStack branch for NSPanel Pro Tools
+
+The releases are created to match the firmware versions, where the first three digits in the version number correspond to the NSPanel Pro firmware version. For example, v2.0.0.1 matches the Z2M 2.0.0 version. The last digit indicates any changes made to the package. In this example, it represents the first version.
+
+The Readme.txt file is the original manufacturer’s changelog. Which is not updated properly.
+
+## Version history of z2m
+
+### v2.1.1.2 (2025-11-23)
+- issue fixed: Z2M does not retain settings after reboot
+
+### v2.1.1.1 (2025-02-25)
+- new z2m v2.1.1
+
+### v2.0.0.1 (2025-01-26)
+- new z2m v2.0.0
+- add keep data and keep configuration capability
+- shrink size of z2m version by %50
+
+### v1.42.2
+- final z2m 1.42 package
+
+## Version history of Sonoff
+
+### v3.7.1
+- official 3.7.1 fw zigbee stack
+
+### v3.5.0
+- official 3.5.0 fw zigbee stack
+
+## About Sonoff NSPanel Pro ZStack repository
 Sonoff NSPanel Pro device Zigbee gateway packages repository. 
 NSPanel Pro Tools app's packageinstaller use this repository. 
 
@@ -26,9 +56,9 @@ Naming convension is ```<lowercase zstack type>_<zstack version>```
 
 ##### How to interpret
 
-Example: z2m_v1.42.3:z2m-1.42
-- z2m_v1.42.3: Type is z2m branch and the artifact version is 1.42.3. 
-- z2m-1.42: Type is z2m and the ZStack version is 1.42
+Example: z2m_v2.0.0.1:z2m-2.0.0
+- z2m_v2.0.0.1: Type is z2m branch and the artifact version is 2.0.0.1. Last digit shows the pacakge version. 
+- z2m-1.42: Type is z2m and the ZStack version is 2.0.0
 
 #### Package installer scripts
 
@@ -42,11 +72,6 @@ Example: z2m_v1.42.3:z2m-1.42
 
 The script can be reviewed in the relevant branch under the name `pm.sh`.
 
-## Sonoff package
-In this firmware version, you can change the Zigbee operation mode to router mode. I believe using it in Coordinator mode without the original application isn't practical because you can only connect Sonoff devices and cannot interact with them. If you want a more generic Coordinator, Zigbee2MQTT (z2m) is a better option.
-
-Zigbee2MQTT version is Node.js-based and is now available as an installable package.
-
 ## Zigbee2MQTT package
 Before installing, check if there’s enough space on the `/data` partition using a command like `df -h`. If you haven’t heavily modified the device, you should have around 1.9GB of free space.
 
@@ -59,5 +84,7 @@ zigbee2mqtt frontend is available at: `http://<device ip>:8080/`
 > [!CAUTION]
 > Be aware that if z2m does not connect to the local broker, the application will not currently detect whether z2m is running and will not allow modifications. It will treat it as if it is not running. However, you can still reset or replace it if needed.
 
+
 ### Package configuration
 Curently packages configurations are available in ```/data/local/nspanel_tools_pkg/<package>/config``` folder. UI is not support it yet.
+
